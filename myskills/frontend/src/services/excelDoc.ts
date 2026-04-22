@@ -32,12 +32,15 @@ class ExcelDocumentService {
     });
   }
 
-  async chunkAndStoreExcel(id: string, chunkMode: string): Promise<{
+  async chunkAndStoreExcel(id: string, data: {
+    chunk_mode: string;
+    include_header: boolean;
+  }): Promise<{
     id: string;
     chunk_count: number;
     vector_count: number;
   }> {
-    return api.post(`/excel-documents/${id}/chunk-and-store`, { chunk_mode: chunkMode });
+    return api.post(`/excel-documents/${id}/chunk-and-store`, data);
   }
 
   async previewChunk(data: {

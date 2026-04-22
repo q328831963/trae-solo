@@ -1,34 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Plus, Edit, Trash2, BookOpen, FileText, Database, RefreshCw } from 'lucide-react';
+import knowledgeBaseService from '../services/knowledgeBase';
+
+interface KnowledgeBase {
+  id: string;
+  name: string;
+  description: string;
+  document_count: number;
+  vector_count: number;
+  created_at: string;
+}
 
 const KnowledgeBases: React.FC = () => {
-  const [knowledgeBases, setKnowledgeBases] = useState([
-    {
-      id: '1',
-      name: '技术文档',
-      description: '包含技术相关文档',
-      documentCount: 8,
-      vectorCount: 45,
-      createdAt: '2024-01-01'
-    },
-    {
-      id: '2',
-      name: '产品文档',
-      description: '产品需求和设计文档',
-      documentCount: 12,
-      vectorCount: 87,
-      createdAt: '2024-01-02'
-    },
-    {
-      id: '3',
-      name: '营销资料',
-      description: '营销相关文档',
-      documentCount: 5,
-      vectorCount: 23,
-      createdAt: '2024-01-03'
+  const [knowledgeBases, setKnowledgeBases] = useState<KnowledgeBase[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchKnowledgeBases();
+  }, []);
+
+  const fetchKnowledgeBases = async () => {
+    try {
+      setIsLoading(true);
+      const data = await knowledgeBaseService.getKnowledgeBases();
+      setKnowledgeBases(data);
+    } catch (error) {
+      console.error('获取知识库列表失败:', error);
+    } finally {
+      setIsLoading(false);
     }
-  ]);
+  };
+
+  const handleDeleteKnowledgeBase = async (id: string) => {
+    if (confirm('确定要删除这个知识库吗？')) {
+      try {
+        await knowledgeBaseService.deleteKnowledgeBase(id);
+        fetchKnowledgeBases();
+      } catch (error) {
+        console.error('删除知识库失败:', error);
+      }
+    }
+  };
+
+  const handleGenerateSummary = async (id: string) => {
+    try {
+      await knowledgeBaseService.generateSummary(id);
+      alert('摘要生成任务已启动');
+    } catch (error) {
+      console.error('生成摘要失败:', error);
+    }
+  };
+
+  if (isLoading) {
+    return <div className="p-6">加载中...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -55,7 +81,10 @@ const KnowledgeBases: React.FC = () => {
                 <button className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors">
                   <Edit className="h-4 w-4" />
                 </button>
-                <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                <button 
+                  className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  onClick={() => handleDeleteKnowledgeBase(kb.id)}
+                >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
@@ -64,22 +93,25 @@ const KnowledgeBases: React.FC = () => {
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center">
                   <FileText className="h-4 w-4 mr-2 text-gray-500" />
-                  <span className="text-sm">{kb.documentCount} 文档</span>
+                  <span className="text-sm">{kb.document_count} 文档</span>
                 </div>
                 <div className="flex items-center">
                   <Database className="h-4 w-4 mr-2 text-gray-500" />
-                  <span className="text-sm">{kb.vectorCount} 向量</span>
+                  <span className="text-sm">{kb.vector_count} 向量</span>
                 </div>
                 <div className="flex items-center">
                   <RefreshCw className="h-4 w-4 mr-2 text-gray-500" />
-                  <span className="text-sm">创建于 {kb.createdAt}</span>
+                  <span className="text-sm">创建于 {new Date(kb.created_at).toLocaleDateString()}</span>
                 </div>
               </div>
               <div className="mt-4 flex space-x-2">
                 <button className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 transition-colors">
                   查看文档
                 </button>
-                <button className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 transition-colors">
+                <button 
+                  className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 transition-colors"
+                  onClick={() => handleGenerateSummary(kb.id)}
+                >
                   生成摘要
                 </button>
                 <button className="px-3 py-1 text-sm border rounded-lg hover:bg-gray-50 transition-colors">

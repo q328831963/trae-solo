@@ -15,5 +15,5 @@ class Vector(Base):
     content = Column(Text, nullable=False)
     embedding = Column(JSON, nullable=False)  # 向量嵌入（JSON数组）
     embedding_dimension = Column(Integer)
-    metadata = Column(JSON)  # 元数据
+    vector_metadata = Column(JSON)  # 元数据
     created_at = Column(DateTime(timezone=True), server_default=func.now())

@@ -107,7 +107,7 @@ class DocumentService:
                     content=chunk,
                     embedding=embedding,
                     embedding_dimension=len(embedding),
-                    metadata={
+                    vector_metadata={
                         "document_name": document.name,
                         "chunk_index": i
                     }

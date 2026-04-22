@@ -25,8 +25,11 @@ class VectorService {
     return api.post(`/knowledge-bases/${kbId}/vectors/rebuild`);
   }
 
-  async retrieveVectors(query: string, kbId?: string): Promise<RetrieveResult[]> {
-    return api.post('/vectors/retrieve', { query, knowledge_base_id: kbId });
+  async retrieveVectors(data: {
+    query: string;
+    knowledge_base_id: string;
+  }): Promise<RetrieveResult[]> {
+    return api.post('/vectors/retrieve', data);
   }
 }
 

@@ -83,7 +83,7 @@ class ExcelDocumentService:
                     content=chunk["content"],
                     embedding=embedding,
                     embedding_dimension=len(embedding),
-                    metadata={
+                    vector_metadata={
                         "document_name": doc.name,
                         "sheet_name": chunk["sheet_name"],
                         "chunk_index": i
