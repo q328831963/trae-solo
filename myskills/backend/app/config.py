@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     max_upload_size: int = 104857600  # 100MB
     
     # CORS配置
-    cors_origins: List[str] = ["http://localhost:5173", "http://localhost:3000"]
+    cors_origins: List[str] = ["http://localhost:5173", "http://localhost:3000", "http://localhost:5175"]
     
     # LLM配置
     llm_api_url: Optional[str] = None
