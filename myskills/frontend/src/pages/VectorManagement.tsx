@@ -29,6 +29,9 @@ const VectorManagement: React.FC = () => {
   useEffect(() => {
     if (selectedKnowledgeBase) {
       fetchVectors();
+    } else {
+      setIsLoading(false);
+      setVectors([]);
     }
   }, [selectedKnowledgeBase]);
 

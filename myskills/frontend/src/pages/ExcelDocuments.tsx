@@ -21,6 +21,9 @@ const ExcelDocuments: React.FC = () => {
   useEffect(() => {
     if (selectedKnowledgeBase) {
       fetchExcelDocuments();
+    } else {
+      setIsLoading(false);
+      setDocuments([]);
     }
   }, [selectedKnowledgeBase]);
 

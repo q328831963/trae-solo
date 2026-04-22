@@ -21,6 +21,9 @@ const Documents: React.FC = () => {
   useEffect(() => {
     if (selectedKnowledgeBase) {
       fetchDocuments();
+    } else {
+      setIsLoading(false);
+      setDocuments([]);
     }
   }, [selectedKnowledgeBase]);
 
